@@ -1,6 +1,7 @@
 package edu.pezzati.simplemath.operator;
 
 import edu.pezzati.simplemath.ExpressionTerm;
+import edu.pezzati.simplemath.app.SimpleMathVisitor;
 
 public class Minus implements ExpressionTerm<Integer> {
 
@@ -46,5 +47,18 @@ public class Minus implements ExpressionTerm<Integer> {
 		} else if (!rightOp.equals(other.rightOp))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
+	}
+
+	public ExpressionTerm<Integer> getLeft() {
+		return leftOp;
+	}
+	
+	public ExpressionTerm<Integer> getRight() {
+		return rightOp;
 	}
 }

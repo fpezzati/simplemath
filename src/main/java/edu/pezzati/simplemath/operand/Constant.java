@@ -1,6 +1,7 @@
 package edu.pezzati.simplemath.operand;
 
 import edu.pezzati.simplemath.ExpressionTerm;
+import edu.pezzati.simplemath.app.SimpleMathVisitor;
 
 public class Constant implements ExpressionTerm<Integer> {
 
@@ -40,4 +41,8 @@ public class Constant implements ExpressionTerm<Integer> {
 		return true;
 	}
 
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
+	}
 }

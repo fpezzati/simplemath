@@ -1,6 +1,7 @@
 package edu.pezzati.simplemath.operator;
 
 import edu.pezzati.simplemath.ExpressionTerm;
+import edu.pezzati.simplemath.app.SimpleMathVisitor;
 
 public class Abs implements ExpressionTerm<Integer> {
 
@@ -43,5 +44,14 @@ public class Abs implements ExpressionTerm<Integer> {
 		} else if (!exp.equals(other.exp))
 			return false;
 		return true;
+	}
+
+	public ExpressionTerm<Integer> getTerm() {
+		return exp;
+	}
+	
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
 	}
 }

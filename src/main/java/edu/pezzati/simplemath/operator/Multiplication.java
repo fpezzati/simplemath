@@ -3,6 +3,7 @@ package edu.pezzati.simplemath.operator;
 import java.util.List;
 
 import edu.pezzati.simplemath.ExpressionTerm;
+import edu.pezzati.simplemath.app.SimpleMathVisitor;
 import edu.pezzati.simplemath.error.SimpleMathError;
 
 public class Multiplication implements ExpressionTerm<Integer> {
@@ -46,5 +47,14 @@ public class Multiplication implements ExpressionTerm<Integer> {
 		} else if (!exps.equals(other.exps))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
+	}
+
+	public List<ExpressionTerm<Integer>> getTerms() {
+		return exps;
 	}
 }

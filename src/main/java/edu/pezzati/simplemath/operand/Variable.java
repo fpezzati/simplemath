@@ -1,6 +1,7 @@
 package edu.pezzati.simplemath.operand;
 
 import edu.pezzati.simplemath.ExpressionTerm;
+import edu.pezzati.simplemath.app.SimpleMathVisitor;
 import edu.pezzati.simplemath.error.NotValuableVariable;
 
 public class Variable implements ExpressionTerm<Integer> {
@@ -55,5 +56,10 @@ public class Variable implements ExpressionTerm<Integer> {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
 	}
 }

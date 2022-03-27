@@ -1,5 +1,7 @@
 package edu.pezzati.simplemath;
 
+import edu.pezzati.simplemath.app.SimpleMathVisitable;
+
 /**
  * Main simplemath building block.
  * 
@@ -7,8 +9,7 @@ package edu.pezzati.simplemath;
  *
  * @param <V>
  */
-public interface ExpressionTerm<V> {
+public interface ExpressionTerm<V> extends SimpleMathVisitable {
 
 	V evaluate();
-
 }

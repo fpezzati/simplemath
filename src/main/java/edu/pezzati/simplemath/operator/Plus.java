@@ -3,21 +3,22 @@ package edu.pezzati.simplemath.operator;
 import java.util.List;
 
 import edu.pezzati.simplemath.ExpressionTerm;
+import edu.pezzati.simplemath.app.SimpleMathVisitor;
 import edu.pezzati.simplemath.error.SimpleMathError;
 
 public class Plus implements ExpressionTerm<Integer> {
 
-	private List<ExpressionTerm<Integer>> exp;
+	private List<ExpressionTerm<Integer>> exps;
 
 	public Plus(List<ExpressionTerm<Integer>> exp) {
 		if(exp.size() < 2) throw new SimpleMathError();
-		this.exp = exp;
+		this.exps = exp;
 	}
 
 	@Override
 	public Integer evaluate() {
 		Integer sum = 0;
-		for(ExpressionTerm<Integer> singleExp : exp) {
+		for(ExpressionTerm<Integer> singleExp : exps) {
 			sum = sum + singleExp.evaluate();
 		}
 		return sum;
@@ -27,7 +28,7 @@ public class Plus implements ExpressionTerm<Integer> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((exp == null) ? 0 : exp.hashCode());
+		result = prime * result + ((exps == null) ? 0 : exps.hashCode());
 		return result;
 	}
 
@@ -40,11 +41,20 @@ public class Plus implements ExpressionTerm<Integer> {
 		if (getClass() != obj.getClass())
 			return false;
 		Plus other = (Plus) obj;
-		if (exp == null) {
-			if (other.exp != null)
+		if (exps == null) {
+			if (other.exps != null)
 				return false;
-		} else if (!exp.equals(other.exp))
+		} else if (!exps.equals(other.exps))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
+	}
+	
+	public List<ExpressionTerm<Integer>> getTerms() {
+		return exps;
 	}
 }
