@@ -8,19 +8,19 @@ import edu.pezzati.simplemath.operator.Minus;
 import edu.pezzati.simplemath.operator.Multiplication;
 import edu.pezzati.simplemath.operator.Plus;
 
-public interface SimpleMathVisitor {
+public interface SimpleMathVisitor<V extends Number> {
 
-	void visit(Constant term);
+	void visit(Constant<V> term);
 	
-	void visit(Variable term);
+	void visit(Variable<V> term);
 	
-	void visit(Abs term);
+	void visit(Abs<V> term);
 	
-	void visit(Division term);
+	void visit(Division<V> term);
 	
-	void visit(Minus term);
+	void visit(Minus<V> term);
 	
-	void visit(Multiplication term);
+	void visit(Multiplication<V> term);
 	
-	void visit(Plus term);
+	void visit(Plus<V> term);
 }

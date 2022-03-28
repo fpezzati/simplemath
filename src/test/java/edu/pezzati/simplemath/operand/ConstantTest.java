@@ -9,7 +9,7 @@ class ConstantTest {
 
 	@Test
 	void sutStoresAValue() {
-		ExpressionTerm<Integer> sut = new Constant(10);
+		ExpressionTerm<Integer> sut = new Constant<Integer>(10);
 		Assertions.assertEquals(10, sut.evaluate());
 	}
 }

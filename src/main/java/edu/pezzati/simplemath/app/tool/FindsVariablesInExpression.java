@@ -13,7 +13,7 @@ import edu.pezzati.simplemath.operator.Minus;
 import edu.pezzati.simplemath.operator.Multiplication;
 import edu.pezzati.simplemath.operator.Plus;
 
-public class FindsVariablesInExpression implements SimpleMathVisitor {
+public class FindsVariablesInExpression<V extends Number> implements SimpleMathVisitor<V> {
 
 	private List<String> journal;
 	
@@ -32,32 +32,32 @@ public class FindsVariablesInExpression implements SimpleMathVisitor {
 	}
 
 	@Override
-	public void visit(Abs term) {
+	public void visit(Abs<V> term) {
 		term.getTerm().accept(this);
 	}
 
 	@Override
-	public void visit(Division term) {
+	public void visit(Division<V> term) {
 		term.getLeft().accept(this);
 		term.getRight().accept(this);
 	}
 
 	@Override
-	public void visit(Minus term) {
+	public void visit(Minus<V> term) {
 		term.getLeft().accept(this);
 		term.getRight().accept(this);
 	}
 
 	@Override
-	public void visit(Multiplication term) {
-		for(ExpressionTerm<Integer> singleTerm : term.getTerms()) {
+	public void visit(Multiplication<V> term) {
+		for(ExpressionTerm<V> singleTerm : term.getTerms()) {
 			singleTerm.accept(this);
 		}
 	}
 
 	@Override
-	public void visit(Plus term) {
-		for(ExpressionTerm<Integer> singleTerm : term.getTerms()) {
+	public void visit(Plus<V> term) {
+		for(ExpressionTerm<V> singleTerm : term.getTerms()) {
 			singleTerm.accept(this);
 		}
 	}

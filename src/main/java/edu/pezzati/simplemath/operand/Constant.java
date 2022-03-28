@@ -3,17 +3,22 @@ package edu.pezzati.simplemath.operand;
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
 
-public class Constant implements ExpressionTerm<Integer> {
+public class Constant<V extends Number> implements ExpressionTerm<V> {
 
-	private Integer value;
+	private V value;
 
-	public Constant(Integer value) {
+	public Constant(V value) {
 		this.value = value;
 	}
 
 	@Override
-	public Integer evaluate() {
+	public V evaluate() {
 		return value;
+	}
+
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
 	}
 
 	@Override
@@ -39,10 +44,5 @@ public class Constant implements ExpressionTerm<Integer> {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
-	}
-
-	@Override
-	public void accept(SimpleMathVisitor v) {
-		v.visit(this);
 	}
 }

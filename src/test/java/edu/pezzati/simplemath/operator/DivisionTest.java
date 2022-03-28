@@ -1,28 +1,21 @@
 package edu.pezzati.simplemath.operator;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.operand.Constant;
+import edu.pezzati.simplemath.operator.tool.DivisionComputator;
 
 class DivisionTest {
 
 	@Test
-	void divisionStoresTwoExpressions() {
-		ExpressionTerm<Integer> sut = new Division(new Constant(10), new Constant(2));
-		ExpressionTerm<Integer> expected = new Division(new Constant(10), new Constant(2));
-		Assertions.assertEquals(expected, sut);
-	}
-	
-	@Test
-	void divisionEvaluatesBothItsExpressions() {
-		ExpressionTerm<Integer> sut = new Division(
-				new Constant(33), 
-				new Plus(Arrays.asList(new Constant(1), new Constant(0), new Constant(2)))
-		);
-		Assertions.assertEquals(11, sut.evaluate());
+	void sutReliesOnComputatorToEvaluateExpression() {
+		DivisionComputator<ExpressionTerm<Integer>> computator = Mockito.mock(DivisionComputator.class);
+		Mockito.when(computator.compute(ArgumentMatchers.any(ExpressionTerm.class), ArgumentMatchers.any(ExpressionTerm.class))).thenReturn(new Constant<Integer>(5));
+		ExpressionTerm<Integer> sut = new Division<Integer>(new Constant<Integer>(10), new Constant<Integer>(2), computator);
+		sut.evaluate();
+		Mockito.verify(computator).compute(ArgumentMatchers.eq(new Constant<Integer>(10)), ArgumentMatchers.eq(new Constant<Integer>(2)));
 	}
 }

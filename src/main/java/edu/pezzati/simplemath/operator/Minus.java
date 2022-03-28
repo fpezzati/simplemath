@@ -2,20 +2,23 @@ package edu.pezzati.simplemath.operator;
 
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
+import edu.pezzati.simplemath.operator.tool.MinusComputator;
 
-public class Minus implements ExpressionTerm<Integer> {
+public class Minus<V extends Number> implements ExpressionTerm<V> {
 
-	private ExpressionTerm<Integer> leftOp;
-	private ExpressionTerm<Integer> rightOp;
+	private ExpressionTerm<V> leftOp;
+	private ExpressionTerm<V> rightOp;
+	private MinusComputator<ExpressionTerm<V>> computator;
 
-	public Minus(ExpressionTerm<Integer> leftOp, ExpressionTerm<Integer> rightOp) {
+	public Minus(ExpressionTerm<V> leftOp, ExpressionTerm<V> rightOp, MinusComputator<ExpressionTerm<V>> computator) {
 		this.leftOp = leftOp;
 		this.rightOp = rightOp;
+		this.computator = computator;
 	}
 
 	@Override
-	public Integer evaluate() {
-		return leftOp.evaluate() - rightOp.evaluate();
+	public V evaluate() {
+		return computator.compute(leftOp, rightOp).evaluate();
 	}
 
 	@Override
@@ -54,11 +57,11 @@ public class Minus implements ExpressionTerm<Integer> {
 		v.visit(this);
 	}
 
-	public ExpressionTerm<Integer> getLeft() {
+	public ExpressionTerm<V> getLeft() {
 		return leftOp;
 	}
 	
-	public ExpressionTerm<Integer> getRight() {
+	public ExpressionTerm<V> getRight() {
 		return rightOp;
 	}
 }

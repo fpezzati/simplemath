@@ -2,20 +2,36 @@ package edu.pezzati.simplemath.operator;
 
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
+import edu.pezzati.simplemath.operator.tool.DivisionComputator;
 
-public class Division implements ExpressionTerm<Integer> {
+public class Division<V extends Number> implements ExpressionTerm<V> {
 
-	private ExpressionTerm<Integer> leftOp;
-	private ExpressionTerm<Integer> rightOp;
+	private ExpressionTerm<V> leftOp;
+	private ExpressionTerm<V> rightOp;
+	private DivisionComputator<ExpressionTerm<V>> computator;
 
-	public Division(ExpressionTerm<Integer> leftOp, ExpressionTerm<Integer> rightOp) {
+	public Division(ExpressionTerm<V> leftOp, ExpressionTerm<V> rightOp, DivisionComputator<ExpressionTerm<V>> computator) {
 		this.leftOp = leftOp;
 		this.rightOp = rightOp;
+		this.computator = computator;
 	}
 
 	@Override
-	public Integer evaluate() {
-		return leftOp.evaluate() / rightOp.evaluate();
+	public V evaluate() {
+		return computator.compute(leftOp, rightOp).evaluate();
+	}
+
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
+	}
+
+	public ExpressionTerm<V> getLeft() {
+		return leftOp;
+	}
+	
+	public ExpressionTerm<V> getRight() {
+		return rightOp;
 	}
 
 	@Override
@@ -47,18 +63,5 @@ public class Division implements ExpressionTerm<Integer> {
 		} else if (!rightOp.equals(other.rightOp))
 			return false;
 		return true;
-	}
-	
-	@Override
-	public void accept(SimpleMathVisitor v) {
-		v.visit(this);
-	}
-
-	public ExpressionTerm<Integer> getLeft() {
-		return leftOp;
-	}
-	
-	public ExpressionTerm<Integer> getRight() {
-		return rightOp;
 	}
 }

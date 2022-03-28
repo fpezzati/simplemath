@@ -1,5 +1,5 @@
 package edu.pezzati.simplemath;
 
-public interface Operand extends ExpressionTerm {
+public interface Operand<V extends Number> extends ExpressionTerm<V> {
 
 }

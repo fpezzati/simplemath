@@ -4,17 +4,17 @@ import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
 import edu.pezzati.simplemath.error.NotValuableVariable;
 
-public class Variable implements ExpressionTerm<Integer> {
+public class Variable<V extends Number> implements ExpressionTerm<V> {
 
 	private String name;
-	private ExpressionTerm<Integer> exp;
+	private ExpressionTerm<V> exp;
 	
 	public Variable(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public Integer evaluate() {
+	public V evaluate() {
 		if(exp == null) throw new NotValuableVariable();
 		return exp.evaluate();
 	}
@@ -23,7 +23,7 @@ public class Variable implements ExpressionTerm<Integer> {
 		return name;
 	}
 
-	public void setExpression(ExpressionTerm<Integer> exp) {
+	public void setExpression(ExpressionTerm<V> exp) {
 		this.exp = exp;
 	}
 

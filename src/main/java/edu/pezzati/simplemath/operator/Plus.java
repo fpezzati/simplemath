@@ -5,23 +5,22 @@ import java.util.List;
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
 import edu.pezzati.simplemath.error.SimpleMathError;
+import edu.pezzati.simplemath.operator.tool.PlusComputator;
 
-public class Plus implements ExpressionTerm<Integer> {
+public class Plus<V extends Number> implements ExpressionTerm<V> {
 
-	private List<ExpressionTerm<Integer>> exps;
+	private List<ExpressionTerm<V>> exps;
+	private PlusComputator<ExpressionTerm<V>> computator;
 
-	public Plus(List<ExpressionTerm<Integer>> exp) {
-		if(exp.size() < 2) throw new SimpleMathError();
-		this.exps = exp;
+	public Plus(List<ExpressionTerm<V>> exps, PlusComputator<ExpressionTerm<V>> computator) {
+		if(exps.size() < 2) throw new SimpleMathError();
+		this.exps = exps;
+		this.computator = computator;
 	}
 
 	@Override
-	public Integer evaluate() {
-		Integer sum = 0;
-		for(ExpressionTerm<Integer> singleExp : exps) {
-			sum = sum + singleExp.evaluate();
-		}
-		return sum;
+	public V evaluate() {
+		return computator.compute(exps).evaluate();
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class Plus implements ExpressionTerm<Integer> {
 		v.visit(this);
 	}
 	
-	public List<ExpressionTerm<Integer>> getTerms() {
+	public List<ExpressionTerm<V>> getTerms() {
 		return exps;
 	}
 }

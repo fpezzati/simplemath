@@ -9,7 +9,6 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import edu.pezzati.simplemath.ExpressionTerm;
-import edu.pezzati.simplemath.app.Expression;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
 import edu.pezzati.simplemath.operand.Constant;
 import edu.pezzati.simplemath.operand.Variable;
@@ -18,14 +17,34 @@ import edu.pezzati.simplemath.operator.Division;
 import edu.pezzati.simplemath.operator.Minus;
 import edu.pezzati.simplemath.operator.Multiplication;
 import edu.pezzati.simplemath.operator.Plus;
+import edu.pezzati.simplemath.operator.tool.AbsComputator;
+import edu.pezzati.simplemath.operator.tool.AbsIntComputator;
+import edu.pezzati.simplemath.operator.tool.DivisionComputator;
+import edu.pezzati.simplemath.operator.tool.DivisionIntComputator;
+import edu.pezzati.simplemath.operator.tool.MinusComputator;
+import edu.pezzati.simplemath.operator.tool.MinusIntComputator;
+import edu.pezzati.simplemath.operator.tool.MultiplicationComputator;
+import edu.pezzati.simplemath.operator.tool.MultiplicationIntComputator;
+import edu.pezzati.simplemath.operator.tool.PlusComputator;
+import edu.pezzati.simplemath.operator.tool.PlusIntComputator;
 
 class FindsVariablesInExpressionTest {
 
-	SimpleMathVisitor sut;
+	private SimpleMathVisitor<Integer> sut;
+	private MultiplicationComputator<ExpressionTerm<Integer>> mulC;
+	private DivisionComputator<ExpressionTerm<Integer>> divC;
+	private PlusComputator<ExpressionTerm<Integer>> plusC;
+	private MinusComputator<ExpressionTerm<Integer>> minusC;
+	private AbsComputator<ExpressionTerm<Integer>> absC;
 
 	@BeforeEach
 	void initEach() {
-		sut = new FindsVariablesInExpression();
+		sut = new FindsVariablesInExpression<Integer>();
+		mulC = new MultiplicationIntComputator();
+		divC = new DivisionIntComputator();
+		plusC = new PlusIntComputator();
+		minusC = new MinusIntComputator();
+		absC = new AbsIntComputator();
 	}
 
 	@Test
@@ -35,7 +54,7 @@ class FindsVariablesInExpressionTest {
 
 	@Test
 	void whenSutVisitsConstantItAddsNothingToItsJournal() {
-		Constant term = Mockito.mock(Constant.class);
+		Constant<Integer> term = Mockito.mock(Constant.class);
 		sut.visit(term);
 		Mockito.verify(term, Mockito.never()).evaluate();
 		Assertions.assertTrue(((FindsVariablesInExpression)sut).getJournal().isEmpty());
@@ -43,7 +62,7 @@ class FindsVariablesInExpressionTest {
 
 	@Test
 	void whenSutVisitsVariableItAddsVariableNameToItsJournal() {
-		Variable term = Mockito.mock(Variable.class);
+		Variable<Integer> term = Mockito.mock(Variable.class);
 		Mockito.when(term.getName()).thenReturn("X");
 		sut.visit(term);
 		Mockito.verify(term, Mockito.never()).accept(Mockito.any(SimpleMathVisitor.class));
@@ -53,7 +72,7 @@ class FindsVariablesInExpressionTest {
 	@Test
 	void whenSutVisitsAbsItVisistsAbsTermToo() {
 		ExpressionTerm<Integer> term = getTerm();
-		Abs abs = new Abs(term);
+		Abs<Integer> abs = new Abs<>(term, absC);
 		sut.visit(abs);
 		checkTermsAreEvaluated(term);
 	}
@@ -62,7 +81,7 @@ class FindsVariablesInExpressionTest {
 	void whenSutVisitsDivisionItVisitsDivisionLeftTermAndDivisionRightTermToo() {
 		ExpressionTerm<Integer> term1 = getTerm();
 		ExpressionTerm<Integer> term2 = getTerm();
-		Division term = new Division(term1, term2);
+		Division<Integer> term = new Division<>(term1, term2, divC);
 		sut.visit(term);
 		checkTermsAreEvaluated(term1, term2);
 	}
@@ -71,7 +90,7 @@ class FindsVariablesInExpressionTest {
 	void whenSutVisitsMinusItVisitsMinusLeftTermAndDivisionRightTermToo() {
 		ExpressionTerm<Integer> term1 = getTerm();
 		ExpressionTerm<Integer> term2 = getTerm();
-		Minus term = new Minus(term1, term2);
+		Minus<Integer> term = new Minus<>(term1, term2, minusC);
 		sut.visit(term);
 		checkTermsAreEvaluated(term1, term2);
 	}
@@ -81,7 +100,7 @@ class FindsVariablesInExpressionTest {
 		ExpressionTerm<Integer> term1 = getTerm();
 		ExpressionTerm<Integer> term2 = getTerm();
 		ExpressionTerm<Integer> term3 = getTerm();
-		Multiplication term = new Multiplication(Arrays.asList(term1, term2, term3));
+		Multiplication<Integer> term = new Multiplication<>(Arrays.asList(term1, term2, term3), mulC);
 		sut.visit(term);
 		checkTermsAreEvaluated(term1, term2, term3);
 		
@@ -92,7 +111,7 @@ class FindsVariablesInExpressionTest {
 		ExpressionTerm<Integer> term1 = getTerm();
 		ExpressionTerm<Integer> term2 = getTerm();
 		ExpressionTerm<Integer> term3 = getTerm();
-		Plus term = new Plus(Arrays.asList(term1, term2, term3));
+		Plus<Integer> term = new Plus<>(Arrays.asList(term1, term2, term3), plusC);
 		sut.visit(term);
 		checkTermsAreEvaluated(term1, term2, term3);
 	}

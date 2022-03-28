@@ -1,24 +1,22 @@
 package edu.pezzati.simplemath.operator;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.operand.Constant;
+import edu.pezzati.simplemath.operator.tool.AbsComputator;
 
 class AbsTest {
 
 	@Test
-	void sutStoresAnExpression() {
-		ExpressionTerm<Integer> expected = new Constant(0);
-		ExpressionTerm<Integer> sut = new Abs(expected);
-		Assertions.assertEquals(expected.evaluate(), sut.evaluate());
-	}
-	
-	@Test
-	void sutEvaluatesHerExpressionAsExpressionAbsoluteValue() {
-		ExpressionTerm<Integer> expected = new Constant(-10);
-		ExpressionTerm<Integer> sut = new Abs(expected);
-		Assertions.assertEquals(10, sut.evaluate());
+	void sutReliesOnComputatorToEvaluateExpression() {
+		ExpressionTerm<Integer> expected = new Constant<Integer>(-10);
+		AbsComputator<ExpressionTerm<Integer>> computator = Mockito.mock(AbsComputator.class);
+		Mockito.when(computator.compute(ArgumentMatchers.any(ExpressionTerm.class))).thenReturn(new Constant<Integer>(-10));
+		ExpressionTerm<Integer> sut = new Abs<Integer>(expected, computator);
+		sut.evaluate();
+		Mockito.verify(computator).compute(ArgumentMatchers.eq(new Constant<Integer>(-10)));
 	}
 }

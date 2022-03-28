@@ -84,3 +84,31 @@ Yes it is, having an `ExpressionMap` with circular dependencies triggers the cas
 
 ### If so, how would you adjust your code to avoid such a situation?
 I have implemented a component that check if circular dependencies exist in map to prevent the issue, component implements Khan's algoritm. Class `CheckCircularDependenciesByKhanAlgorithm` is the component.
+
+
+
+
+
+
+
+
+
+select c.customerid, c.name, sum(si.amount * pp.price) from customers c join sales s on c.customerID = s.customerID join salesitem si on s.tranID = si.tranID join productprices pp on si.productID = pp.productID group by c.customerID, c.name order by c.name;
+
+
+select c.customerid, c.name, sum(si.amount * pp.price) from customers c join sales s on c.customerID = s.customerID join salesitem si on s.tranID = si.tranID join (select productprices prp ) as pp on si.productID = pp.productID group by c.customerID, c.name order by c.name;
+
+select prp.price, max(prp.validfrom) from productprices prp where prp.validfrom < to_date('2015-03-01 00:00:00', 'yyyy-MM-dd hh24:mi:ss') group by prp.price
+
+select c.customerid, c.name, sum(si.amount * pp.price) from customers c join sales s on c.customerID = s.customerID join salesitem si on s.tranID = si.tranID join (select prp.price, max(prp.validfrom) from productprices prp where prp.validfrom < s.datetime group by prp.price) as pp on si.productID = pp.productID group by c.customerID, c.name order by c.name; --NOT WORKING
+
+select c.customerid, c.name, sum(si.amount * pp.price) from customers c join sales s on c.customerID = s.customerID join salesitem si on s.tranID = si.tranID join productprices pp on si.productID = pp.productID having max(pp.validfrom) < s.datetime group by c.customerID;
+
+select c.customerid, c.name, sum(si.amount * pp.price) from customers c join sales s on c.customerID = s.customerID join salesitem si on s.tranID = si.tranID join (select * from productprices ppr where ppr.validfrom < s.datetime order by ppr.validfrom limit 1) as pp on si.productID = pp.productID group by c.customerID, c.name order by c.name;
+
+select * from sales s join salesitem si on s.tranID = si.tranID join productprices pp on si.productID = pp.productID where si.productID in (select productID from productprices group by productID having max(validfrom) < s.datetime);
+
+
+select * from custormer c join (select * from sales s join salesitem si on s.tranID = si.tranID join productprices pp on si.productID = pp.productID where pp.validfrom < s.datetime) as x on c.customerID = x.customerID;
+
+select c.customerID, c.name, pp.productID, s.datetime, si.amount, pp.price, pp.validfrom from customers c join sales s on c.customerID = s.customerID join salesitem si on s.tranID = si.tranID join productprices pp on si.productID = pp.productID where s.datetime >= pp.validfrom order by c.name;

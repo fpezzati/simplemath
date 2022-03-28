@@ -2,25 +2,32 @@ package edu.pezzati.simplemath.operator;
 
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
+import edu.pezzati.simplemath.operator.tool.AbsComputator;
 
-public class Abs implements ExpressionTerm<Integer> {
+public class Abs<V extends Number> implements ExpressionTerm<V> {
 
-	private ExpressionTerm<Integer> exp;
+	private ExpressionTerm<V> exp;
+	private AbsComputator<ExpressionTerm<V>> computator;
 
-	public Abs(ExpressionTerm<Integer> exp) {
+	public Abs(ExpressionTerm<V> exp, AbsComputator<ExpressionTerm<V>> computator) {
 		this.exp = exp;
+		this.computator = computator;
 	}
 
 	@Override
-	public Integer evaluate() {
-		Integer val = exp.evaluate();
-		if(val < 0) {
-			return -1 * val;
-		} else {
-			return exp.evaluate();
-		}
+	public V evaluate() {
+		return computator.compute(exp).evaluate();
 	}
-
+	
+	public ExpressionTerm<V> getTerm() {
+		return exp;
+	}
+	
+	@Override
+	public void accept(SimpleMathVisitor v) {
+		v.visit(this);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -44,14 +51,5 @@ public class Abs implements ExpressionTerm<Integer> {
 		} else if (!exp.equals(other.exp))
 			return false;
 		return true;
-	}
-
-	public ExpressionTerm<Integer> getTerm() {
-		return exp;
-	}
-	
-	@Override
-	public void accept(SimpleMathVisitor v) {
-		v.visit(this);
 	}
 }
