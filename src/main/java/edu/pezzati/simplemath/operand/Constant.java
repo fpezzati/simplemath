@@ -45,4 +45,8 @@ public class Constant<V extends Number> implements ExpressionTerm<V> {
 			return false;
 		return true;
 	}
+
+	public V getValue() {
+		return value;
+	}
 }

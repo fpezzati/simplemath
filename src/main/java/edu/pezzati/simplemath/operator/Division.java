@@ -2,27 +2,19 @@ package edu.pezzati.simplemath.operator;
 
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
-import edu.pezzati.simplemath.operator.tool.DivisionComputator;
 
 public class Division<V extends Number> implements ExpressionTerm<V> {
 
 	private ExpressionTerm<V> leftOp;
 	private ExpressionTerm<V> rightOp;
-	private DivisionComputator<ExpressionTerm<V>> computator;
 
-	public Division(ExpressionTerm<V> leftOp, ExpressionTerm<V> rightOp, DivisionComputator<ExpressionTerm<V>> computator) {
+	public Division(ExpressionTerm<V> leftOp, ExpressionTerm<V> rightOp) {
 		this.leftOp = leftOp;
 		this.rightOp = rightOp;
-		this.computator = computator;
 	}
 
 	@Override
-	public V evaluate() {
-		return computator.compute(leftOp, rightOp).evaluate();
-	}
-
-	@Override
-	public void accept(SimpleMathVisitor v) {
+	public void accept(SimpleMathVisitor<V> v) {
 		v.visit(this);
 	}
 
@@ -43,6 +35,7 @@ public class Division<V extends Number> implements ExpressionTerm<V> {
 		return result;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -2,29 +2,21 @@ package edu.pezzati.simplemath.operator;
 
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
-import edu.pezzati.simplemath.operator.tool.AbsComputator;
 
 public class Abs<V extends Number> implements ExpressionTerm<V> {
 
 	private ExpressionTerm<V> exp;
-	private AbsComputator<ExpressionTerm<V>> computator;
 
-	public Abs(ExpressionTerm<V> exp, AbsComputator<ExpressionTerm<V>> computator) {
+	public Abs(ExpressionTerm<V> exp) {
 		this.exp = exp;
-		this.computator = computator;
 	}
 
-	@Override
-	public V evaluate() {
-		return computator.compute(exp).evaluate();
-	}
-	
 	public ExpressionTerm<V> getTerm() {
 		return exp;
 	}
 	
 	@Override
-	public void accept(SimpleMathVisitor v) {
+	public void accept(SimpleMathVisitor<V> v) {
 		v.visit(this);
 	}
 	
@@ -36,6 +28,7 @@ public class Abs<V extends Number> implements ExpressionTerm<V> {
 		return result;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

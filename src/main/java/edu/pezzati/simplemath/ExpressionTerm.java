@@ -11,5 +11,4 @@ import edu.pezzati.simplemath.app.SimpleMathVisitable;
  */
 public interface ExpressionTerm<V extends Number> extends SimpleMathVisitable<V>{
 
-	V evaluate();
 }

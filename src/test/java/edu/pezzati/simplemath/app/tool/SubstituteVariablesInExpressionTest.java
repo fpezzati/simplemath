@@ -7,10 +7,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.pezzati.simplemath.ExpressionTerm;
-import edu.pezzati.simplemath.app.Expression;
-import edu.pezzati.simplemath.app.ExpressionMap;
+import edu.pezzati.simplemath.error.SimpleMathError;
 import edu.pezzati.simplemath.operand.Constant;
 import edu.pezzati.simplemath.operand.Variable;
+import edu.pezzati.simplemath.operator.Division;
+import edu.pezzati.simplemath.operator.Minus;
+import edu.pezzati.simplemath.operator.Multiplication;
 import edu.pezzati.simplemath.operator.Plus;
 
 class SubstituteVariablesInExpressionTest {
@@ -34,7 +36,7 @@ class SubstituteVariablesInExpressionTest {
 	@Test
 	void substitutionTermIsMandatory() {
 		substitutionTerm = null;
-		Assertions.assertThrows(NullPointerException.class, ()->{
+		Assertions.assertThrows(SimpleMathError.class, ()->{
 			sut.substitute(toCheckTerm, variableName, substitutionTerm);
 		});
 	}
@@ -45,7 +47,7 @@ class SubstituteVariablesInExpressionTest {
 	@Test
 	void VariableNameIsMandatory() {
 		variableName = null;
-		Assertions.assertThrows(NullPointerException.class, ()->{
+		Assertions.assertThrows(SimpleMathError.class, ()->{
 			sut.substitute(toCheckTerm, variableName, substitutionTerm);
 		});
 	}
@@ -65,38 +67,64 @@ class SubstituteVariablesInExpressionTest {
 	 * when variable name is not found sut does nothing but returns a copy object in any case.
 	 */
 	@Test
-	void whenVariableNameIsntFoundSutDoesNothing() {
-		variableName = null;
+	void whenVariableNameIsntFoundSutSubstitutesNothing() {
+		variableName = "Y";
+		toCheckTerm = new Plus<Integer>(Arrays.asList(new Variable<Integer>("X"), new Constant<Integer>(5)));
+		ExpressionTerm<Integer> expected = new Plus<Integer>(Arrays.asList(new Variable<Integer>("X"), new Constant<Integer>(5)));
+		ExpressionTerm<Integer> actual = sut.substitute(toCheckTerm, variableName, substitutionTerm);
+		checkTermsAreEqualsButDifferentObjects(expected, actual);
+		
+	}
+	
+	@Test
+	void whenTermToCheckIsConstantSutSubstitutesNothing() {
+		toCheckTerm = new Constant<Integer>(5);
 		ExpressionTerm<Integer> expected = new Constant<>(5);
 		ExpressionTerm<Integer> actual = sut.substitute(toCheckTerm, variableName, substitutionTerm);
+		checkTermsAreEqualsButDifferentObjects(expected, actual);
+	}
+	
+	@Test
+	void whenTermToCheckIsMatchingVariableSutSubstituteIt() {
+		toCheckTerm = new Variable<Integer>("X");
+		ExpressionTerm<Integer> actual = sut.substitute(toCheckTerm, variableName, substitutionTerm);
+		checkTermsAreTheSameObjects(substitutionTerm, actual);
+	}
+	
+	@Test
+	void whenTermToCheckIsTermContainingVariableSutSubstitutes() {
+		toCheckTerm = new Plus<Integer>(Arrays.asList(new Variable<Integer>("X"), new Constant<Integer>(5)));
+		ExpressionTerm<Integer> expected = new Plus<Integer>(Arrays.asList(new Constant<Integer>(5), new Constant<Integer>(5)));
+		ExpressionTerm<Integer> actual = sut.substitute(toCheckTerm, variableName, substitutionTerm);
+		checkTermsAreEqualsButDifferentObjects(expected, actual);
+	}
+	
+	@Test
+	void whenTermToCheckIsSomeComplexTermWithVariableSutSubstitutes() {
+		toCheckTerm = new Minus<Integer>(
+				new Multiplication<Integer>(
+						Arrays.asList(new Variable<Integer>("X"), new Variable<Integer>("Y"), new Constant<Integer>(3))
+						), 
+				new Division<Integer>(new Variable<Integer>("X"), new Plus<Integer>(Arrays.asList(new Variable<Integer>("X"), new Constant<Integer>(3))))
+			);
+		ExpressionTerm<Integer> expected = new Minus<Integer>(
+				new Multiplication<Integer>(
+						Arrays.asList(new Constant<>(5), new Variable<Integer>("Y"), new Constant<Integer>(3))
+						), 
+				new Division<Integer>(new Constant<>(5), new Plus<Integer>(Arrays.asList(new Constant<>(5), new Constant<Integer>(3))))
+			);
+		ExpressionTerm<Integer> actual = sut.substitute(toCheckTerm, variableName, substitutionTerm);
+		checkTermsAreEqualsButDifferentObjects(expected, actual);
+	}
+	
+	private void checkTermsAreEqualsButDifferentObjects(ExpressionTerm<Integer> expected,
+			ExpressionTerm<Integer> actual) {
 		Assertions.assertEquals(expected, actual);
 		Assertions.assertFalse(expected == actual);
 	}
 	
-	
-	/**
-	 * for every name hit variable is replaced with given expressionterm 
-	 */
-
-	
-
-	private ExpressionMap getSingleVariableMap() {
-		ExpressionMap expMap = new ExpressionMap();
-		Expression exp = new Expression();
-		exp.setExpression(new Plus<Integer>(Arrays.asList(new Constant<Integer>(3), new Constant<Integer>(1)), null));
-		expMap.getVariablesMap().put("X", exp );
-		return expMap;
-	}
-
-	private ExpressionMap getMapWithCircularDependency() {
-		ExpressionMap expMap = new ExpressionMap();
-		Expression expX = new Expression();
-		expX.setExpression(new Variable<>("Y"));
-		Expression expY = new Expression();
-		expY.setExpression(new Variable<>("Z"));
-		Expression expZ = new Expression();
-		expZ.setExpression(new Variable<>("X"));
-		expMap.getVariablesMap().put("X", expX);
-		return expMap;
+	private void checkTermsAreTheSameObjects(ExpressionTerm<Integer> expected,
+			ExpressionTerm<Integer> actual) {
+		Assertions.assertTrue(expected == actual);
 	}
 }

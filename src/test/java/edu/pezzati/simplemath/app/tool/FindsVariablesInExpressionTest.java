@@ -93,7 +93,7 @@ class FindsVariablesInExpressionTest {
 	void whenSutVisitsMinusItVisitsMinusLeftTermAndDivisionRightTermToo() {
 		ExpressionTerm<Integer> term1 = getTerm();
 		ExpressionTerm<Integer> term2 = getTerm();
-		Minus<Integer> term = new Minus<>(term1, term2, minusC);
+		Minus<Integer> term = new Minus<>(term1, term2);
 		sut.visit(term);
 		checkTermsAreEvaluated(term1, term2);
 	}
@@ -103,7 +103,7 @@ class FindsVariablesInExpressionTest {
 		ExpressionTerm<Integer> term1 = getTerm();
 		ExpressionTerm<Integer> term2 = getTerm();
 		ExpressionTerm<Integer> term3 = getTerm();
-		Multiplication<Integer> term = new Multiplication<>(Arrays.asList(term1, term2, term3), mulC);
+		Multiplication<Integer> term = new Multiplication<>(Arrays.asList(term1, term2, term3));
 		sut.visit(term);
 		checkTermsAreEvaluated(term1, term2, term3);
 		
@@ -114,7 +114,7 @@ class FindsVariablesInExpressionTest {
 		ExpressionTerm<Integer> term1 = getTerm();
 		ExpressionTerm<Integer> term2 = getTerm();
 		ExpressionTerm<Integer> term3 = getTerm();
-		Plus<Integer> term = new Plus<>(Arrays.asList(term1, term2, term3), plusC);
+		Plus<Integer> term = new Plus<>(Arrays.asList(term1, term2, term3));
 		sut.visit(term);
 		checkTermsAreEvaluated(term1, term2, term3);
 	}

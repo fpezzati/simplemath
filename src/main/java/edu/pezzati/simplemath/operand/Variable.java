@@ -2,7 +2,6 @@ package edu.pezzati.simplemath.operand;
 
 import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.app.SimpleMathVisitor;
-import edu.pezzati.simplemath.error.NotValuableVariable;
 
 public class Variable<V extends Number> implements ExpressionTerm<V> {
 
@@ -11,12 +10,6 @@ public class Variable<V extends Number> implements ExpressionTerm<V> {
 	
 	public Variable(String name) {
 		this.name = name;
-	}
-
-	@Override
-	public V evaluate() {
-		if(exp == null) throw new NotValuableVariable();
-		return exp.evaluate();
 	}
 
 	public String getName() {
