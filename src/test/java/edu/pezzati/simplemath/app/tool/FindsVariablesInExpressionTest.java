@@ -1,6 +1,7 @@
 package edu.pezzati.simplemath.app.tool;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ import edu.pezzati.simplemath.operator.tool.PlusIntComputator;
 
 class FindsVariablesInExpressionTest {
 
-	private SimpleMathVisitor<Integer> sut;
+	private FindsVariables<Integer> sut;
 	private MultiplicationComputator<ExpressionTerm<Integer>> mulC;
 	private DivisionComputator<ExpressionTerm<Integer>> divC;
 	private PlusComputator<ExpressionTerm<Integer>> plusC;
@@ -49,24 +50,26 @@ class FindsVariablesInExpressionTest {
 
 	@Test
 	void sutComesWithAnEmptyJournal() {
-		Assertions.assertTrue(((FindsVariablesInExpression) sut).getJournal().isEmpty());
+		Assertions.assertTrue(((FindsVariablesInExpression<Integer>) sut).getVariableNames().isEmpty());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void whenSutVisitsConstantItAddsNothingToItsJournal() {
 		Constant<Integer> term = Mockito.mock(Constant.class);
 		sut.visit(term);
 		Mockito.verify(term, Mockito.never()).evaluate();
-		Assertions.assertTrue(((FindsVariablesInExpression)sut).getJournal().isEmpty());
+		Assertions.assertTrue(((FindsVariablesInExpression<Integer>)sut).getVariableNames().isEmpty());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void whenSutVisitsVariableItAddsVariableNameToItsJournal() {
 		Variable<Integer> term = Mockito.mock(Variable.class);
 		Mockito.when(term.getName()).thenReturn("X");
 		sut.visit(term);
 		Mockito.verify(term, Mockito.never()).accept(Mockito.any(SimpleMathVisitor.class));
-		Assertions.assertEquals(Arrays.asList("X"), ((FindsVariablesInExpression)sut).getJournal());
+		Assertions.assertEquals(new HashSet<String>(Arrays.asList("X")), ((FindsVariablesInExpression<Integer>)sut).getVariableNames());
 	}
 
 	@Test
@@ -121,6 +124,7 @@ class FindsVariablesInExpressionTest {
 		return Mockito.mock(ExpressionTerm.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void checkTermsAreEvaluated(ExpressionTerm<Integer>...expressionTerms) {
 		InOrder ord = Mockito.inOrder(expressionTerms);
 		for(ExpressionTerm<Integer> term : expressionTerms) {

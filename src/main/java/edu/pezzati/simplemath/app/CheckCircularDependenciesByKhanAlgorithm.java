@@ -1,11 +1,14 @@
 package edu.pezzati.simplemath.app;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
 public class CheckCircularDependenciesByKhanAlgorithm implements CheckCircularDependencies {
+
+	private List<String> sortedElements;
 
 	@Override
 	public boolean check(ExpressionMap map) {
@@ -14,6 +17,13 @@ public class CheckCircularDependenciesByKhanAlgorithm implements CheckCircularDe
 			computeEdgesFrom(variable, map.getExpression(variable), mapEdges);
 		}
 		return checkForCycles(map.getVariablesMap().keySet(), new ArrayList<Edge>(mapEdges));
+	}
+	
+	@Override
+	public List<String> sortedElements() {
+		List<String> result = new ArrayList<>(sortedElements);
+		Collections.reverse(result);
+		return result;
 	}
 
 	private void computeEdgesFrom(String variable, Expression expression, List<Edge> mapEdges) {
@@ -49,7 +59,7 @@ public class CheckCircularDependenciesByKhanAlgorithm implements CheckCircularDe
 		// creating a root node, a node without incoming edges
 		
 		List<String> nodesWithoutIncomingEdges = new ArrayList<>(findNodesWithNoIncomingEdges(variables, mapEdges));
-		List<String> sortedElements = new ArrayList<>();
+		sortedElements = new ArrayList<>();
 		ListIterator<String> sortedNodesIterator = nodesWithoutIncomingEdges.listIterator();
 		while (sortedNodesIterator.hasNext()) {
 			String node = sortedNodesIterator.next();

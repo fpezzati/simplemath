@@ -1,10 +1,9 @@
 package edu.pezzati.simplemath.app.tool;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import edu.pezzati.simplemath.ExpressionTerm;
-import edu.pezzati.simplemath.app.SimpleMathVisitor;
 import edu.pezzati.simplemath.operand.Constant;
 import edu.pezzati.simplemath.operand.Variable;
 import edu.pezzati.simplemath.operator.Abs;
@@ -13,21 +12,21 @@ import edu.pezzati.simplemath.operator.Minus;
 import edu.pezzati.simplemath.operator.Multiplication;
 import edu.pezzati.simplemath.operator.Plus;
 
-public class FindsVariablesInExpression<V extends Number> implements SimpleMathVisitor<V> {
+public class FindsVariablesInExpression<V extends Number> implements FindsVariables<V> {
 
-	private List<String> journal;
+	private Set<String> journal;
 	
 	public FindsVariablesInExpression() {
-		journal = new ArrayList<String>();
+		journal = new HashSet<>();
 	}
 
 	@Override
-	public void visit(Constant term) {
+	public void visit(Constant<V> term) {
 		// DO NOTHING
 	}
 
 	@Override
-	public void visit(Variable term) {
+	public void visit(Variable<V> term) {
 		journal.add(term.getName());
 	}
 
@@ -62,8 +61,8 @@ public class FindsVariablesInExpression<V extends Number> implements SimpleMathV
 		}
 	}
 
-	public List<String> getJournal() {
+	@Override
+	public Set<String> getVariableNames() {
 		return journal;
 	}
-
 }

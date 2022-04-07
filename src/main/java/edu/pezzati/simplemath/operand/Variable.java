@@ -44,7 +44,7 @@ public class Variable<V extends Number> implements ExpressionTerm<V> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Variable other = (Variable) obj;
+		Variable<V> other = (Variable) obj;
 		if (exp == null) {
 			if (other.exp != null)
 				return false;
@@ -59,7 +59,7 @@ public class Variable<V extends Number> implements ExpressionTerm<V> {
 	}
 	
 	@Override
-	public void accept(SimpleMathVisitor v) {
+	public void accept(SimpleMathVisitor<V> v) {
 		v.visit(this);
 	}
 }

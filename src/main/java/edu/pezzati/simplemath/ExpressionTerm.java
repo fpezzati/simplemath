@@ -9,7 +9,7 @@ import edu.pezzati.simplemath.app.SimpleMathVisitable;
  *
  * @param <V>
  */
-public interface ExpressionTerm<V extends Number> extends SimpleMathVisitable {
+public interface ExpressionTerm<V extends Number> extends SimpleMathVisitable<V>{
 
 	V evaluate();
 }

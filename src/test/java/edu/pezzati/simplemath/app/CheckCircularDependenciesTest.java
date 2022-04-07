@@ -1,5 +1,6 @@
 package edu.pezzati.simplemath.app;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
@@ -10,6 +11,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.mockito.internal.util.collections.Sets;
+
+import edu.pezzati.simplemath.operand.Variable;
 
 class CheckCircularDependenciesTest {
 
@@ -49,6 +52,13 @@ class CheckCircularDependenciesTest {
 	void whenSutReceivesAMapWithNoCircularDependencyItReturnsTrue() {
 		ExpressionMap map = getExpressionMapWithNoCircularDependency();
 		Assertions.assertTrue(sut.check(map));
+	}
+	
+	@Test
+	void whenSutReceivesAMapWithNoCircularDependencyItIsAbleToTellInWhichOrderApplyVariableSubstitution() {
+		ExpressionMap map = getExpressionMapWithNoCircularDependency();
+		sut.check(map);
+		Assertions.assertEquals(Arrays.asList("Z", "X", "Y"), sut.sortedElements());
 	}
 
 	private ExpressionMap getExpressionMapWithNoCircularDependency() {
@@ -92,5 +102,24 @@ class CheckCircularDependenciesTest {
 				Arguments.of(t.getExpressionMap("X=>X", "Y=>Z"), false),
 				Arguments.of(t.getExpressionMap("X=>Y", "Y=>Z", "Z=>A, B", "A=>Y", "B"), false)
 				);
+	}
+	
+	@Test
+	void checkCircularDependencyOnARealExpressionMap() {
+		Assertions.assertFalse(sut.check(getMapWithCircularDependency()));
+	}
+	
+	private ExpressionMap getMapWithCircularDependency() {
+		ExpressionMap expMap = new ExpressionMap();
+		Expression expX = new Expression();
+		expX.setExpression(new Variable<>("Y"));
+		Expression expY = new Expression();
+		expY.setExpression(new Variable<>("Z"));
+		Expression expZ = new Expression();
+		expZ.setExpression(new Variable<>("X"));
+		expMap.getVariablesMap().put("X", expX);
+		expMap.getVariablesMap().put("Y", expY);
+		expMap.getVariablesMap().put("Z", expZ);
+		return expMap;
 	}
 }
