@@ -13,7 +13,7 @@ import edu.pezzati.simplemath.operator.Plus;
 
 public class EvaluatorIntegerTerm implements Evaluator<Integer>, SimpleMathVisitor<Integer> {
 	
-	private Integer result;
+	private Integer lastVisitedInteger;
 
 	@Override
 	public Integer evaluate(ExpressionTerm<Integer> term) {
@@ -57,7 +57,11 @@ public class EvaluatorIntegerTerm implements Evaluator<Integer>, SimpleMathVisit
 
 	@Override
 	public void visit(Plus<Integer> term) {
-		
-		
+		Integer result = 0;
+		for(ExpressionTerm<Integer> plusTerm : term.getTerms()) {
+			plusTerm.accept(this);
+			result = result + lastVisitedInteger;
+		}
+		lastVisitedInteger = result;
 	}
 }
