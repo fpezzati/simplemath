@@ -12,11 +12,6 @@ public class Constant<V extends Number> implements ExpressionTerm<V> {
 	}
 
 	@Override
-	public V evaluate() {
-		return value;
-	}
-
-	@Override
 	public void accept(SimpleMathVisitor<V> v) {
 		v.visit(this);
 	}
@@ -29,6 +24,8 @@ public class Constant<V extends Number> implements ExpressionTerm<V> {
 		return result;
 	}
 
+	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -37,7 +34,7 @@ public class Constant<V extends Number> implements ExpressionTerm<V> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Constant<V> other = (Constant) obj;
+		Constant other = (Constant) obj;
 		if (value == null) {
 			if (other.value != null)
 				return false;
