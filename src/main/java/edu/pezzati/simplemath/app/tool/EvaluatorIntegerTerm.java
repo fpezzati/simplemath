@@ -18,12 +18,12 @@ public class EvaluatorIntegerTerm implements Evaluator<Integer>, SimpleMathVisit
 	@Override
 	public Integer evaluate(ExpressionTerm<Integer> term) {
 		term.accept(this);
-		return result;
+		return lastVisitedInteger;
 	}
 
 	@Override
 	public void visit(Constant<Integer> term) {
-		// DO NOTHING.
+		lastVisitedInteger = term.getValue();
 	}
 
 	@Override
@@ -33,25 +33,46 @@ public class EvaluatorIntegerTerm implements Evaluator<Integer>, SimpleMathVisit
 
 	@Override
 	public void visit(Abs<Integer> term) {
-		// TODO Auto-generated method stub
-		
+		Integer absResult = 0;
+		term.getTerm().accept(this);
+		if(lastVisitedInteger > 0) {
+			absResult = lastVisitedInteger;
+		} else {
+			absResult = -1 * lastVisitedInteger;
+		}
+		lastVisitedInteger = absResult;
 	}
 
 	@Override
 	public void visit(Division<Integer> term) {
-		// TODO Auto-generated method stub
-		
+		Integer leftResult = 0;
+		Integer rightResult = 0;
+		term.getLeft().accept(this);
+		leftResult = lastVisitedInteger;
+		term.getRight().accept(this);
+		rightResult = lastVisitedInteger;
+		lastVisitedInteger = leftResult / rightResult;
 	}
 
 	@Override
 	public void visit(Minus<Integer> term) {
-		// TODO Auto-generated method stub
-		
+		Integer leftResult = 0;
+		Integer rightResult = 0;
+		term.getLeft().accept(this);
+		leftResult = lastVisitedInteger;
+		term.getRight().accept(this);
+		rightResult = lastVisitedInteger;
+		lastVisitedInteger = leftResult - rightResult;
 	}
 
 	@Override
 	public void visit(Multiplication<Integer> term) {
-		// TODO Auto-generated method stub
+		Integer result = 1;
+		for(ExpressionTerm<Integer> plusTerm : term.getTerms()) {
+			plusTerm.accept(this);
+			result = result * lastVisitedInteger;
+		}
+		lastVisitedInteger = result;
 		
 	}
 
