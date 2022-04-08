@@ -28,7 +28,7 @@ class CheckCircularDependenciesTest {
 	 */
 	@Test
 	void whenSutReceivesANullMapItReturnsANPE() {
-		ExpressionMap map = null;
+		ExpressionMap<Integer> map = null;
 		Assertions.assertThrows(NullPointerException.class, ()->{
 			sut.check(map);
 		});
@@ -41,7 +41,7 @@ class CheckCircularDependenciesTest {
 	
 	@Test
 	void whenSutReceivesAnEmptyMapItReturnsTrue() {
-		ExpressionMap map = new ExpressionMap();
+		ExpressionMap<Integer> map = new ExpressionMap<>();
 		Assertions.assertTrue(sut.check(map));
 	}
 	
@@ -50,29 +50,30 @@ class CheckCircularDependenciesTest {
 	 */
 	@Test
 	void whenSutReceivesAMapWithNoCircularDependencyItReturnsTrue() {
-		ExpressionMap map = getExpressionMapWithNoCircularDependency();
+		ExpressionMap<Integer> map = getExpressionMapWithNoCircularDependency();
 		Assertions.assertTrue(sut.check(map));
 	}
 	
 	@Test
 	void whenSutReceivesAMapWithNoCircularDependencyItIsAbleToTellInWhichOrderApplyVariableSubstitution() {
-		ExpressionMap map = getExpressionMapWithNoCircularDependency();
+		ExpressionMap<Integer> map = getExpressionMapWithNoCircularDependency();
 		sut.check(map);
-		Assertions.assertEquals(Arrays.asList("Z", "X", "Y"), sut.sortedElements());
+		Assertions.assertEquals(Arrays.asList("Y", "X", "Z"), sut.sortedElements());
 	}
 
-	private ExpressionMap getExpressionMapWithNoCircularDependency() {
+	private ExpressionMap<Integer> getExpressionMapWithNoCircularDependency() {
 		return getExpressionMap("X=>Z", "Y=>X,Z", "Z");
 	}
 	
-	private Expression getExpression(String...variables) {
-		Expression exp = Mockito.mock(Expression.class);
+	@SuppressWarnings("unchecked")
+	private Expression<Integer> getExpression(String...variables) {
+		Expression<Integer> exp = Mockito.mock(Expression.class);
 		Mockito.when(exp.getReferencedSymbols()).thenReturn(Sets.newSet(variables));
 		return exp;
 	}
 	
-	private ExpressionMap getExpressionMap(String...nodeAndEdges) {
-		ExpressionMap map = new ExpressionMap();
+	private ExpressionMap<Integer> getExpressionMap(String...nodeAndEdges) {
+		ExpressionMap<Integer> map = new ExpressionMap<>();
 		for(String nodeAndEdge : nodeAndEdges) {
 			String[] vars = nodeAndEdge.split("=>");
 			if(vars.length > 1) {
@@ -89,7 +90,7 @@ class CheckCircularDependenciesTest {
 	 */
 	@ParameterizedTest(name = "{index} => map={0}, expected={1}")
 	@MethodSource("mapsProvider")
-	void checkExpressionMapCircularDependencies(ExpressionMap map, boolean expected) {
+	void checkExpressionMapCircularDependencies(ExpressionMap<Integer> map, boolean expected) {
 		Assertions.assertEquals(expected, sut.check(map));
 	}
 	
@@ -109,13 +110,13 @@ class CheckCircularDependenciesTest {
 		Assertions.assertFalse(sut.check(getMapWithCircularDependency()));
 	}
 	
-	private ExpressionMap getMapWithCircularDependency() {
-		ExpressionMap expMap = new ExpressionMap();
-		Expression expX = new Expression();
+	private ExpressionMap<Integer> getMapWithCircularDependency() {
+		ExpressionMap<Integer> expMap = new ExpressionMap<>();
+		Expression<Integer> expX = new Expression<>();
 		expX.setExpression(new Variable<>("Y"));
-		Expression expY = new Expression();
+		Expression<Integer> expY = new Expression<>();
 		expY.setExpression(new Variable<>("Z"));
-		Expression expZ = new Expression();
+		Expression<Integer> expZ = new Expression<>();
 		expZ.setExpression(new Variable<>("X"));
 		expMap.getVariablesMap().put("X", expX);
 		expMap.getVariablesMap().put("Y", expY);

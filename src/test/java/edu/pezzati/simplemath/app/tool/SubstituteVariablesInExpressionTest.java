@@ -10,6 +10,7 @@ import edu.pezzati.simplemath.ExpressionTerm;
 import edu.pezzati.simplemath.error.SimpleMathError;
 import edu.pezzati.simplemath.operand.Constant;
 import edu.pezzati.simplemath.operand.Variable;
+import edu.pezzati.simplemath.operator.Abs;
 import edu.pezzati.simplemath.operator.Division;
 import edu.pezzati.simplemath.operator.Minus;
 import edu.pezzati.simplemath.operator.Multiplication;
@@ -117,6 +118,14 @@ class SubstituteVariablesInExpressionTest {
 		checkTermsAreEqualsButDifferentObjects(expected, actual);
 	}
 	
+	@Test
+	void sutSubstitutesInComplexTerm() {
+		toCheckTerm = getComplexExpressionWithVariables();
+		ExpressionTerm<Integer> partialResult = sut.substitute(toCheckTerm, "X", new Plus<Integer>(Arrays.asList(new Constant<>(1), new Variable<>("Y"))));
+		ExpressionTerm<Integer> actual = sut.substitute(partialResult, "Y", new Abs<Integer>(new Minus<>(new Constant<>(1), new Constant<>(3))));
+		Assertions.assertEquals(getComplexExpressionHavingNoVariables(), actual);
+	}
+	
 	private void checkTermsAreEqualsButDifferentObjects(ExpressionTerm<Integer> expected,
 			ExpressionTerm<Integer> actual) {
 		Assertions.assertEquals(expected, actual);
@@ -126,5 +135,43 @@ class SubstituteVariablesInExpressionTest {
 	private void checkTermsAreTheSameObjects(ExpressionTerm<Integer> expected,
 			ExpressionTerm<Integer> actual) {
 		Assertions.assertTrue(expected == actual);
+	}
+	
+	private Minus<Integer> getComplexExpressionWithVariables() {
+		return new Minus<>(
+				new Constant<>(3),
+				new Multiplication<>(Arrays.asList(
+						new Plus<>(Arrays.asList(
+								new Constant<>(5),
+								new Variable<>("X")
+								)),
+						new Plus<>(Arrays.asList(
+								new Variable<>("X"),
+								new Variable<>("Y"),
+								new Constant<>(1)
+								))
+						))
+				);
+	}
+	
+	private Minus<Integer> getComplexExpressionHavingNoVariables() {
+		return new Minus<>(
+				new Constant<>(3),
+				new Multiplication<>(Arrays.asList(
+						new Plus<>(Arrays.asList(
+								new Constant<>(5),
+								new Plus<Integer>(Arrays.asList(
+										new Constant<>(1), 
+										new Abs<Integer>(new Minus<>(new Constant<>(1), new Constant<>(3)))))
+								)),
+						new Plus<>(Arrays.asList(
+								new Plus<Integer>(Arrays.asList(
+										new Constant<>(1), 
+										new Abs<Integer>(new Minus<>(new Constant<>(1), new Constant<>(3))))),
+								new Abs<Integer>(new Minus<>(new Constant<>(1), new Constant<>(3))),
+								new Constant<>(1)
+								))
+						))
+				);
 	}
 }

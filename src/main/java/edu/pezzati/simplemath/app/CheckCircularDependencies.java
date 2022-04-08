@@ -9,7 +9,7 @@ public interface CheckCircularDependencies {
 	 * 
 	 * @return true if no circular dependency is found, false otherwise
 	 */
-	boolean check(ExpressionMap map);
+	boolean check(ExpressionMap<? extends Number> map);
 
 	/**
 	 * if no circular dependency is found, method returns the order in which

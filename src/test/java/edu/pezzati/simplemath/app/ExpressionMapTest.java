@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 
 class ExpressionMapTest {
 	
-	private ExpressionMap sut;
+	private ExpressionMap<Integer> sut;
 
 	@BeforeEach
 	void initEach() {
-		sut = new ExpressionMap();
+		sut = new ExpressionMap<>();
 	}
 
 	@Test
@@ -31,7 +31,7 @@ class ExpressionMapTest {
 	 */
 	@Test
 	void whenThereIsMatchBetweenSutDictionaryAndRequestedVariableNameSutReturnsProperExpression() {
-		Expression exp = new Expression();
+		Expression<Integer> exp = new Expression<>();
 		sut.getVariablesMap().put("X", exp);
 		Assertions.assertEquals(exp, sut.getExpression("X"));
 	}

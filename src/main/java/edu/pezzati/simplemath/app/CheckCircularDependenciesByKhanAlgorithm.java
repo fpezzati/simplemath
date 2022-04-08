@@ -11,7 +11,7 @@ public class CheckCircularDependenciesByKhanAlgorithm implements CheckCircularDe
 	private List<String> sortedElements;
 
 	@Override
-	public boolean check(ExpressionMap map) {
+	public boolean check(ExpressionMap<? extends Number> map) {
 		List<Edge> mapEdges = new ArrayList<>();
 		for (String variable : map.getVariablesMap().keySet()) {
 			computeEdgesFrom(variable, map.getExpression(variable), mapEdges);
@@ -21,12 +21,10 @@ public class CheckCircularDependenciesByKhanAlgorithm implements CheckCircularDe
 	
 	@Override
 	public List<String> sortedElements() {
-		List<String> result = new ArrayList<>(sortedElements);
-		Collections.reverse(result);
-		return result;
+		return sortedElements;
 	}
 
-	private void computeEdgesFrom(String variable, Expression expression, List<Edge> mapEdges) {
+	private void computeEdgesFrom(String variable, Expression<? extends Number> expression, List<Edge> mapEdges) {
 		for (String symbol : expression.getReferencedSymbols()) {
 			mapEdges.add(new Edge(variable, symbol));
 		}
@@ -57,7 +55,6 @@ public class CheckCircularDependenciesByKhanAlgorithm implements CheckCircularDe
 	 */
 	private boolean checkForCycles(Set<String> variables, List<Edge> mapEdges) {
 		// creating a root node, a node without incoming edges
-		
 		List<String> nodesWithoutIncomingEdges = new ArrayList<>(findNodesWithNoIncomingEdges(variables, mapEdges));
 		sortedElements = new ArrayList<>();
 		ListIterator<String> sortedNodesIterator = nodesWithoutIncomingEdges.listIterator();
