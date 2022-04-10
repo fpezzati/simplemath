@@ -59,17 +59,17 @@ insert into productprices (productID , validfrom, price) values (2, '2015-01-02 
 insert into productprices (productID , validfrom, price) values (6, '2016-01-01 00:00:00', 100);
 ```
 
-###ANSW A
+### ANSW A
 ```
 select c.name, si.productid, sum(si.amount) from customers c join sales s on c.customerID = s.customerID join salesitem si on s.tranID = si.tranID where s.datetime between to_date('2015-01-01 00:00:00', 'yyyy-MM-dd hh24:mi:ss') and to_date('2015-12-31-23:59:59', 'yyyy-MM-dd hh24:mi:ss') group by c.name, si.productid having sum(si.amount) > 9;
 ```
 
-###ANSW B
+### ANSW B
 ```
 select p.name, sum(si.amount) from products p join salesitem si on p.productID = si.productID join sales s on si.tranID = s.tranID where s.datetime between to_date('2010-01-01 00:00:00', 'yyyy-MM-dd hh24:mi:ss') and to_date('2015-12-31 23:59:59', 'yyyy-MM-dd hh24:mi:ss') group by p.name order by sum(si.amount), p.name desc;
 ```
 
-###ANSW C
+### ANSW C
 
 ```
 select c.customerId, c.name, sum(si.amount * (select pp.price from productprices pp where pp.validfrom <= s.datetime and pp.productId = si.productId order by pp.validfrom desc limit 1) ) from salesitem si join sales s on si.tranId = s.tranId join customers c on s.customerId = c.customerId group by c.customerId, c.name;
@@ -77,8 +77,11 @@ select c.customerId, c.name, sum(si.amount * (select pp.price from productprices
 
 ## Exercise 2
 The present project implements a simple solution about representing aritmetic expressions. 
+About this project, `Operator` and `Operand` are the building blocks of an arithmetic expression and they are parametrized by the numeric type (which must extends `java.lang.Number`). Expressions are obtained by composing these types. 
+Aside of these types, another set of tools is relevant to evaluating an expression: `Evaluator`, `FindsVariables` and `SubstituteVariables`. As their name suggests they find variables in expression to eventually substitute them and evaluate the resulting expression. 
+Last but important as the others introduced before, `CheckCircularDependency` is in charge to check if a circular dependency exists in a given variable substitution map, the tool implements the Khan's Algorithm. The tool also provides, if no circular dependency exists in map, an order in which substitute variables in expression. 
 
-###Is it possible that in some cases calculation is not finite?
+### Is it possible that in some cases calculation is not finite?
 Yes it is, having an `ExpressionMap` with circular dependencies triggers the case. 
 
 ### If so, how would you adjust your code to avoid such a situation?
